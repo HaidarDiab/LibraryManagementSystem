@@ -1,0 +1,83 @@
+﻿@model LibraryManagementSystem.Models.Evaluation
+
+@{
+    ViewBag.Title = "إضافة تقييم";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@*This div for page-loading wating*@
+<div class="loading" align="center">
+    <img src="~/images/book-loading.gif" alt="Loading, Please Wait..." style="text-align: center" />
+</div>
+
+
+
+
+<div class="container manage">
+
+
+    <div class="row col-md-12">
+
+
+        <div class="col-md-4">
+
+        </div>
+
+
+        <div class="col-md-8">
+
+            @using (Html.BeginForm("AddEvaluations", "Home", FormMethod.Post))
+            {
+                <div class="col-md-6">
+
+                    <div style="padding-left: 0px; padding-right: 0px;">
+
+                        <img src="~/ExtractedImages/@Model.Book.CoverImageName" class="form-control" style="width: 100%; height: 200px; display: flex; position: center;" />
+
+                    </div><hr/>
+
+
+                    <div class="form-group" style="width: 100%; color: #fff">
+
+                        @Html.LabelFor(m => m.Level, new { @class = "col-md-12" })
+                        @Html.TextBoxFor(m => m.Level, new { @class = "form-control", placeholder = " " })
+                        <div class="text-danger" style="background-color: #f7ec9a">
+
+                            @Html.ValidationMessageFor(m => m.Level)
+                        </div>
+
+                        <h4 class="text-center" style="background-color: #f7ec9a; color: #ff0000">@ViewBag.Result</h4>
+
+                    </div>
+
+
+                    <div class="pull-right">
+                        @Html.HiddenFor(m => m.Id)
+                        @Html.HiddenFor(m => m.Book.Id)
+                        @Html.HiddenFor(m => m.ApplicationUserId)
+                        @Html.AntiForgeryToken()
+
+
+                        <button type="submit" class="btn btn-info">تقييم</button><br /><br />
+                        @Html.ActionLink("الكتب", "BooksIndex", "Home", null, new { @class = "form-control" })
+                    </div>
+
+                </div>
+
+
+            }
+
+        </div>
+
+
+    </div>
+
+</div>
+
+@*Enable Client side validation ... we should put it here .. To ensuser that JQueryval bundels come after JQuery definition *@
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+}

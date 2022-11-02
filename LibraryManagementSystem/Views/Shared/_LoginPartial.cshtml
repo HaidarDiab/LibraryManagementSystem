@@ -1,0 +1,49 @@
+﻿@using Microsoft.AspNet.Identity
+
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-left" }))
+    {
+        @Html.AntiForgeryToken()
+
+<div class="pull-left">
+
+   
+    <div class="dropdown">
+
+        <a class="btn btn-secondary dropdown-toggle" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-caret-down-fill" style="font-size: 15px;"> @User.Identity.GetUserName() </i>
+        </a>
+        
+        @*<a href="#" class="notification" style="font-size: 20px;">
+            <i class="bi bi-globe global-notification-mark"></i>
+            <span class="badge">2</span>        
+        </a>*@
+
+
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            @Html.ActionLink("البروفايل", "Index", "Profiles", routeValues: null, htmlAttributes: new { title = "My Profile", @class = "dropdown-item" })
+
+            <div class="dropdown-divider"></div><br />
+
+            @Html.ActionLink("المفضلة", "FavouriteBookListIndex", "Home", null, new { @class = "dropdown-item" })
+            <div class="dropdown-divider"></div><br />
+
+            @Html.ActionLink("منشوراتي", "MyPosts", "Home", null, new { @class = "dropdown-item" })
+            <hr />
+            <a class="dropdown-item" href="javascript:document.getElementById('logoutForm').submit()">خروج</a>
+        </div>
+    </div>
+</div>
+
+
+    }
+
+}
+else
+{
+    <ul class="nav navbar-nav navbar-left">
+        <li>@Html.ActionLink("اشتراك", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("تسجيل الدخول", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}

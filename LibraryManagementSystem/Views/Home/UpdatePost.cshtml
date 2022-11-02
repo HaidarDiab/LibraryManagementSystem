@@ -1,0 +1,20 @@
+﻿@model LibraryManagementSystem.Models.Post
+
+@{
+    ViewBag.Title = "UpdatePost";
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+
+
+<div class="container manage">
+
+    <div class="row col-md-12">
+
+        @using (Html.BeginForm("UpdatePost", "Home"))
+        {
+            <button type="submit" class="btn btn-info">حفظ التعديل</button>
+        }
+
+    </div>
+</div>
+

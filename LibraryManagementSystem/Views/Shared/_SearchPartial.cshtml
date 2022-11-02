@@ -1,0 +1,25 @@
+﻿@model LibraryManagementSystem.ViewModels.SearchFormViewModel
+@{
+    ViewBag.Title = "_SearchPartial";
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+
+<h2>_SearchPartial</h2>
+
+<div class="manage">
+
+    <div class="jumbotron container col-md-12">
+
+        @using (Html.BeginForm("Search", "Home"))
+        {
+            <div class="input-group">
+                @Html.TextBoxFor(m => m.SearchTearms, new { @class = "form-control" })
+                <span>
+                    <i class="glyphicon glyphicon-zoom-in"></i>
+                </span>
+
+            </div>
+        }
+
+    </div>
+</div>

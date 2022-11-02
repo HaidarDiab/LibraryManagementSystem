@@ -1,0 +1,72 @@
+﻿@model LibraryManagementSystem.Models.Profile
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="profile">
+
+    <h2>البروفايل</h2>
+
+    <div class="container nav navbar-right">
+
+        @using (Html.BeginForm())
+
+        {
+            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.ApplicationUserId)
+            @Html.AntiForgeryToken()
+
+            <div class="col-lg-12">
+
+                <div class="photo-dev col-lg-8">
+                    <img src="~/images/@Model.ImageName" alt="no photo" class="img-circle image-upload" />
+                </div>
+
+                <div class="col-lg-3 pull-right">
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.FirstName)
+                        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.LastName)
+                        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.BirthDate)
+                        @Html.TextBoxFor(m => m.BirthDate, "{0: d MMM yyyy}", new { @class = "form-control" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Email)
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.PhoneNumber)
+                        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Address)
+                        @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+                    </div>
+
+
+
+                    @Html.ActionLink("تعديل", "EditProfile", "Profiles", new { id = Model.ApplicationUserId }, new { @class = "btn btn-info"})
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+

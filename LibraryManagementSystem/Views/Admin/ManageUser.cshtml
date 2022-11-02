@@ -1,0 +1,87 @@
+﻿@model LibraryManagementSystem.ViewModels.AdminViewModel
+@{
+    ViewBag.Title = "إدارة المستخدمين";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@*This div for page-loading wating*@
+<div class="loading" align="center">
+    <img src="~/images/book-loading.gif" alt="Loading, Please Wait..." style="text-align: center" />
+</div>
+
+
+<div class="container manage">
+
+    <div class="jumbotron row col-md-12 text-center">
+
+        <div class="col-md-1"></div>
+
+        <div class="col-md-10">
+            <table id="usersTableId" class="table table-bordered">
+
+                <thead>
+                    <tr class="table-row">
+                        <th class="text-center">اسم المستخدم</th>
+                        <th class="text-center">البريد الالكتروني</th>
+                        <th class="text-center">إدارة</th>
+                    </tr>
+                </thead>
+                <tbody style="color: #121212; font-size: 16px">
+
+                    @foreach (var user in Model.ApplicationUsers)
+                    {
+                        <tr class="table-row">
+                            <td>@user.UserName</td>
+                            <td>@user.Email</td>
+                            <td>
+                                <button data-user-id="@user.Id" class="js-delete btn-link">حذف</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+@section scripts {
+
+    <script>
+
+        $(document).ready(function () {
+
+            $("#usersTableId").DataTable();
+
+            $("#usersTableId").on("click", ".js-delete", function () {
+
+                var button = $(this);
+
+
+                if (confirm("هل أنت متاكد من أنك تريد حذف هذا المستخدم؟")) {
+
+                    $.ajax({
+                        url: "/api/Admin/" + button.attr("data-user-id"),
+                        method: "DELETE",
+                    })
+
+                    button.parents("tr").fadeOut(function () {
+                        $(this).remove()
+                    });
+                    toastr.success("تم حذف المستخدم بنجاح");
+                }
+                else {
+
+                   toastr.error("خطأ بالخادم أعد المحاولة");
+                }
+
+            });
+
+        });
+    </script>
+
+}
+

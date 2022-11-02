@@ -1,0 +1,213 @@
+﻿@model LibraryManagementSystem.ViewModels.BlogFormViewModel
+@{
+    ViewBag.Title = "المدونة";
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+
+
+
+<div class="container post">
+
+    <h2></h2>
+
+    <div class=" row col-md-12">
+
+        <div class="col-md-2"></div>
+
+
+        <div class="col-md-8 postchatbox" style="height: 550px;">
+
+            <div class="div-post-details">
+
+                <div class="post-owneranddate">
+
+                    <img src="~/images/@Model.Profile.ImageName" class="img-circle pull-left" style="width: 30px; height: 30px;" />
+                    <div class="col-md-4">
+                        <a style="padding: 0">@Model.Profile.FirstName @Model.Profile.LastName<br /></a>
+                        <a style="font-size: 14px;">@Model.Post.DateAdded</a>
+                    </div>
+
+
+                </div>
+                @Html.ActionLink("عرض المنشور", "AddComment", "Home", new { id = Model.Post.Id }, new { @class = "form-control btn-link col-md-8 displaycommentshref text-center" })
+
+                <div class="col-md-8 commentonpost">
+
+                    <div class="displayallcomments" style="height: 320px;">
+
+                        <p class="text-center">التعليقات</p>
+
+
+                        @if (!Model.Comments.Any(m => m.PostId == Model.Post.Id))
+                        {
+                            <h5 class="text-center">لايوجد تعليقات على المنشور حتى الآن</h5>
+                        }
+
+                        else
+                        {
+                            foreach (var comment in Model.Comments.Where(c => c.PostId == Model.Post.Id && c.CommentContent != null))
+                            {
+
+                                foreach (var profile in Model.Profiles.Where(p => p.ApplicationUserId == comment.ApplicationUserId))
+                                {
+                                    <div class="row commentownername-dev">
+
+                                        <img src="~/images/@profile.ImageName" class="img-circle" style="width: 20px; height: 20px;" />
+
+                                        <a>@profile.FirstName @profile.LastName</a>
+
+                                        <q style="font-size: 12px;">@comment.CommentDateAdded</q>
+
+                                        @if (comment.ApplicationUserId == ViewBag.ApplicationUserId)
+                                        {
+                                            @Html.ActionLink(" ", "DeleteComment", "Home", new { commentId = comment.Id }, new { @class = "bi bi-trash js-deleteComment" })
+
+                                        }
+
+
+                                    </div>
+                                    <div class="comment-content-dev">
+
+                                        @Html.DisplayFor(m => comment.CommentContent)
+
+                                    </div><hr />
+                                }
+                            }
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="post-edit-buttons col-md-8">
+
+                <div class="col-md-6">
+
+                    @Html.ActionLink("تعليق ", "AddComment", "Home", new { id = Model.Post.Id }, new { @class = "bi bi-chat-left form-control button-link-toggle js-comment" })
+
+                </div>
+
+                <div class="col-md-6">
+                    @if (!Model.LikeOnPosts.Any() || Model.LikeOnPosts.Any())
+                    {
+                        ViewBag.BtnClass = "js-like bi bi-hand-thumbs-up btn-block";
+                        ViewBag.BtnName = " إعجاب ";
+                    }
+
+                    @if (Model.LikeOnPosts.Any(m => m.Like == true && m.PostId == Model.Post.Id && m.ApplicationUserId == ViewBag.ApplicationUserId))
+                    {
+                        ViewBag.BtnClass = "js-unlike bi bi-hand-thumbs-up-fill btn-primary";
+                        ViewBag.BtnName = " أعجبني ";
+                    }
+
+                    <button type="button" data-post-id="@Model.Post.Id" class="form-control @ViewBag.BtnClass">@ViewBag.BtnName</button>
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<input type="text" value="@User.Identity.IsAuthenticated" id="userAutId" hidden />
+
+@section scripts {
+
+    <script>
+
+
+
+        $(document).ready(function () {
+
+            var userStatue = $("#userAutId").val();
+
+
+
+            $(".js-like").click(function (e) {
+                var button = $(e.target);
+                if (userStatue == false) {
+                    swal("يتطلب ذلك تسجيل الدخول");
+
+                }
+                else {
+
+                    $.post("/Home/LikePost", { PostId: button.attr("data-post-id") })
+                        .done(function () {
+
+                            button.removeClass("btn-block bi-hand-thumbs-up js-like").addClass("btn-primary bi-hand-thumbs-up-fill js-unlike").text("أعجبني");
+                            toastr.info("تم تسجيل الإعجاب");
+                        })
+                        .fail(function () {
+                            toastr.error("خطأ بالخادم أعد المحاولة");
+                        })
+                }
+            });
+
+            $(".js-unlike").click(function (e) {
+                var button = $(e.target);
+                $.post("/Home/LikePost", { PostId: button.attr("data-post-id") })
+                    .done(function () {
+                        button.removeClass("btn-primary bi-hand-thumbs-up-fill js-unlike").addClass("btn-block bi-hand-thumbs-up js-like").text("إعجاب");
+                        toastr.info("تم إلغاء تسجيل الإعجاب");
+
+                    })
+                    .fail(function () {
+                        toastr.error("خطأ بالخادم أعد المحاولة");
+                    })
+            });
+
+
+
+            $(".js-comment").click(function (e) {
+                var button = $(e.target);
+                if (userStatue == false) {
+                    swal("يتطلب ذلك تسجيل الدخول");
+
+                }
+
+                else {
+
+                    if (e) {
+
+                        document.getElementById('textboxId').focus();
+                    }
+
+                    else {
+
+                        swal("خطأ بالخادم الرجاء المحاولة مرة أخرى أو استخدام الشريط الجانبي للوصول لصندوق التعليقات في الأسفل")
+                    }
+                }
+            });
+
+
+            $(".js-deleteComment").on("click", function (e) {
+
+                if (confirm("هل أنت متاكد أنك تريد حذف التعليق؟")) {
+
+
+                    swal("تم حذف التعليق بنجاح");
+
+
+                }
+                else {
+                    swal("خطأ بالخادم الرجاء المحاولة مرة أخرى");
+                }
+
+
+            });
+
+
+        });
+
+    </script>
+
+
+}

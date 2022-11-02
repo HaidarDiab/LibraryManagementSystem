@@ -1,0 +1,137 @@
+﻿@model LibraryManagementSystem.ViewModels.BlogFormViewModel
+@{
+    ViewBag.Title = "إضافة تعليق";
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+
+
+
+<div class="container post">
+
+    <h2></h2>
+
+    <div class=" row col-md-12">
+
+
+        <div class="col-md-2"></div>
+
+
+        <div class="col-md-8 postchatbox" style="height: 440px;">
+
+            <div class="div-post-details">
+
+                <div class="post-owneranddate">
+
+                    <img src="~/images/@Model.Post.Profile.ImageName" class="img-circle pull-left" style="width: 30px; height: 30px;" />
+                    <div class="col-md-4">
+                        <a style="padding: 0">@Model.Post.Profile.FirstName @Model.Post.Profile.LastName<br /></a>
+                        <a style="font-size: 14px;">@Model.Post.DateAdded</a>
+                    </div>
+
+
+                </div>
+
+
+                <div style="height: 10px"></div>
+
+
+
+                <div class="post-content">
+
+                    @Html.DisplayFor(p => Model.Post.Contains, new { @class = "col-md-8" })
+
+                </div>
+
+
+                <div class="post-edit-buttons col-md-8">
+
+                    <div class="col-md-6">
+
+
+                        <button type="button" class="bi bi-chat-left form-control button-link-toggle js-comment" id="js-commentId" data-user-id="@Model.Post.Id" value="@Model.Post.Id">تعليق</button>
+
+                    </div>
+
+                    <div class="col-md-6">
+                        @if (!Model.LikeOnPosts.Any() || Model.LikeOnPosts.Any())
+                        {
+                            ViewBag.BtnClass = "js-like bi bi-hand-thumbs-up btn-block";
+                            ViewBag.BtnName = " إعجاب ";
+                        }
+
+                        @if (Model.LikeOnPosts.Any(m => m.Like == true && m.PostId == Model.Post.Id && m.ApplicationUserId == ViewBag.ApplicationUserId))
+                        {
+                            ViewBag.BtnClass = "js-unlike bi bi-hand-thumbs-up-fill btn-primary";
+                            ViewBag.BtnName = " أعجبني ";
+                        }
+
+                        <button type="button" data-post-id="@Model.Post.Id" class="form-control @ViewBag.BtnClass">@ViewBag.BtnName</button>
+
+
+                    </div>
+
+
+                </div>
+
+                @if (User.Identity.IsAuthenticated)
+                {
+
+                    @*..........This Div to comment On the post....................*@
+
+                    using (Html.BeginForm("AddComment", "Home"))
+                    {
+                        @Html.HiddenFor(m => m.Comment.Id)
+                        @Html.HiddenFor(m => m.Post.Id)
+
+                        @Html.AntiForgeryToken()
+
+                        <div class="commentscontrolsection col-md-12">
+
+                            <button type="submit" data-post-id="@Model.Post.Id" class="btn btn-info js-addComment">تعليق</button>
+                            <div class="col-md-12 form-textbox-comment">
+
+                                @Html.TextBoxFor(m => m.Comment.CommentContent, new { @class = "form-control textboxCommentClass", placeholder = "...اكتب تعليقاً" })
+                                @Html.ValidationMessageFor(m => m.Comment.CommentContent)
+
+
+                            </div>
+
+                            <img src="~/images/@Model.Profile.ImageName" class="img-circle" style="width: 28px; height: 28px;" />
+
+                        </div>
+
+                    }
+
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section scripts {
+
+    <script>
+
+        $(document).ready(function (e) {
+
+            $(".js-addComment").on("click", function (e) {
+
+                if (e) {
+                    swal("تمت إضافة التعليق بنجاح");
+                }
+
+                else {
+                    swal("خطأ بالخادم أعد المحاولة مرة أخرى")
+                }
+            });
+
+        });
+
+    </script>
+
+}

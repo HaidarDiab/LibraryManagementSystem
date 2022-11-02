@@ -1,0 +1,18 @@
+namespace LibraryManagementSystem.Migrations
+{
+    using System;
+    using System.Data.Entity.Migrations;
+    
+    public partial class RemoveDataAnnotaionsOnCommentContentPropertInCommentClass : DbMigration
+    {
+        public override void Up()
+        {
+            AlterColumn("dbo.Comments", "CommentContent", c => c.String());
+        }
+        
+        public override void Down()
+        {
+            AlterColumn("dbo.Comments", "CommentContent", c => c.String(nullable: false));
+        }
+    }
+}

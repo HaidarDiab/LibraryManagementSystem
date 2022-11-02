@@ -1,0 +1,60 @@
+﻿@model IEnumerable<LibraryManagementSystem.Models.Evaluation>
+@{
+    ViewBag.Title = "تقييماتي";
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+
+
+
+@*This div for page-loading wating*@
+<div class="loading" align="center">
+    <img src="~/images/book-loading.gif" alt="Loading, Please Wait..." style="text-align: center" />
+</div>
+
+
+<div class="container manage">
+
+
+
+    <div class="jumbotron row col-md-12 text-center">
+
+        <h4 class="message-result text-center">@ViewBag.Result</h4>
+
+        <div class="col-md-12">
+
+            <div class="col-md-12 manage-display-controlpanel-admin">
+
+                @foreach (var evaluation in Model)
+                {
+                    <div class="col-md-3 manage-dev">
+                        <div>
+                            <img src="~/ExtractedImages/@evaluation.Book.CoverImageName" />
+                            <p><strong>@evaluation.Book.Title</strong></p>
+
+                            <div class="manage-links">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    @Html.ActionLink("حذف", "DeleteEevaluation", "Admin", new { id = evaluation.Id }, new { onclick = "return confirm('هل انت متأكد من أنك تريد حذف هذا الكتاب؟');" });
+                                }
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+
+            <div class="col-md-12">
+                <a href="@Request.UrlReferrer" class="form-control text-center  text-danger" title="الرجوع للصفحة السابقة">الرجوع للصفحة السابقة</a>
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+

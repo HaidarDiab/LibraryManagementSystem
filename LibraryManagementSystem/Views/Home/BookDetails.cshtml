@@ -1,0 +1,110 @@
+﻿@model LibraryManagementSystem.ViewModels.EvaluationBookDetailsFormViewModel
+@{
+    ViewBag.Title = "تفاصيل الكتاب";
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+
+
+@*This div for page-loading wating*@
+<div class="loading" align="center">
+    <img src="~/images/book-loading.gif" alt="Loading, Please Wait..." style="text-align: center" />
+</div>
+
+
+<h2 class="text-center"></h2>
+
+<div class="container manage">
+
+    <div class="jumbotron row col-md-12 manage-display">
+
+
+        <div class="col-md-6">
+
+            <div class="book-details-leftt-part row">
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Book.Title)
+                    @Html.TextBoxFor(m => m.Book.Title, new { @class = "form-control" })
+                </div>
+
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Book.AuthorName)
+                    @Html.TextBoxFor(m => m.Book.AuthorName, new { @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Book.ReleaseDate)
+                    @Html.TextBoxFor(m => m.Book.ReleaseDate, "{0: d MMM yyyy}", new { @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+
+                    @Html.LabelFor(m => m.Book.Summary)
+                    @Html.TextAreaFor(m => m.Book.Summary, new { contenteditable = false, @class = "form-control", rows = 12 })
+                </div>
+            </div>
+
+        </div>
+
+        <div class="divider col-md-2"></div>
+
+        <div class="col-md-4 book-picture-links">
+
+            <img src="~/ExtractedImages/@Model.Book.CoverImageName" alt="الصورة غير متوفرة" title="@Model.Book.Title" style="text-align: center; " />
+
+            <div class="text-center">
+                <h3>التقييم</h3>
+
+                @using (Html.BeginForm())
+                {
+                    byte sum = 0;
+
+                    foreach (var evaluation in Model.Evaluations.Where(e => e.BookId == Model.Book.Id))
+                    {
+                        sum += evaluation.Level;
+                    }
+
+                    var count = Model.Evaluations.Count(e => e.BookId == Model.Book.Id);
+                    if (!Model.Evaluations.Any())
+                    {
+                        count = 1;
+                    }
+
+                    var result = sum / count;
+
+                    if (result <= 0)
+                    {
+                        <h5>لايوجد تقييم بعد</h5>
+                    }
+
+                    else 
+                    {
+                        for (int i = 0; i < result; i++)
+                        {
+                            <i class="glyphicon glyphicon-star"></i>
+                        }
+
+}
+                    }
+
+
+            </div>
+
+            <div class="book-links">
+                @Html.ActionLink("تصفح الكتاب", "BrowsePdf", "Home", new { id = Model.Book.Id }, new { target = "_blank", @class = "form-control" })
+                @Html.ActionLink("تحميل الكتاب", "DownloadBook", "Home", new { id = Model.Book.Id }, new { target = "_blank", @class = "form-control" })
+                @Html.ActionLink("إضافة تقييم", "AddEvaluations", "Home", new { id = Model.Book.Id }, new { target = "_blank", @class = "form-control" })
+                @Html.ActionLink("إضافة للمفضلة", "AddBookToFavouriteList", "Home", new { id = Model.Book.Id }, new { @class = "form-control" })
+                <a href="@Request.UrlReferrer" class="form-control text-center  text-danger" title="الرجوع للصفحة السابقة">الرجوع للصفحة السابقة</a>
+                <h4 class="message-result text-center">@ViewBag.Result</h4>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+

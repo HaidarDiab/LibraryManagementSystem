@@ -1,0 +1,53 @@
+﻿@model IEnumerable<LibraryManagementSystem.Models.FavouriteBookList>
+
+@{
+    ViewBag.Title = "مفضلتي";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@*This div for page-loading wating*@
+<div class="loading" align="center">
+    <img src="~/images/book-loading.gif" alt="Loading, Please Wait..." style="text-align: center" />
+</div>
+
+
+<div class="container manage">
+
+    <div class="jumbotron row col-md-12 text-center">
+
+        @if (!Model.Any())
+        {
+            <h3 class="text-center text-danger">لم تتم إضافة كتب للمفضلة بعد</h3>
+        }
+
+        <h4 class="message-result text-center">@ViewBag.Result</h4>
+
+        <div class="col-md-12">
+
+            <div class="col-md-12 manage-display">
+
+                @foreach (var favouriteBook in Model)
+                {
+                    <div class="col-md-6 manage-dev">
+
+                        <img src="~/ExtractedImages/@favouriteBook.Book.CoverImageName" />
+                        <p><strong>@favouriteBook.Book.Title</strong></p>
+
+                        <div class="manage-links">
+
+                            @Html.ActionLink("حذف", "DeleteBookFromFavourite", "Home", new { id = favouriteBook.Id }, new { onclick = "return confirm('هل انت متأكد من أنك تريد حذف هذا الكتاب من المفضلة؟');" })
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+</div>

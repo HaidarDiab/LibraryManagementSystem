@@ -1,0 +1,65 @@
+﻿@model LibraryManagementSystem.Models.Post
+
+@{
+    ViewBag.Title = "نشر بوست";
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+
+
+@*This div for page-loading wating*@
+<div class="loading" align="center">
+    <img src="~/images/book-loading.gif" alt="Loading, Please Wait..." style="text-align: center" />
+</div>
+
+
+<div class="container manage">
+
+    <div class="col-md-3"></div>
+
+    <div class="col-md-6">
+
+
+        <div class="form-group" id="toaster">
+
+            @using (Html.BeginForm("AddPost", "Test"))
+            {
+
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.Id)
+                @Html.HiddenFor(m => m.ApplicationUser.Id)
+                @Html.HiddenFor(m => m.Profile.Id)
+                @Html.HiddenFor(m => m.ApplicationUserId)
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <img src="~/images/@Model.Profile.ImageName" class="img-circle" style="width: 100px; height: 100px;" />
+                        <h4 class="text-center">@Model.Profile.FirstName @Model.Profile.LastName</h4>
+                    </div>
+
+                    <div class="form-group col-md-offset-3">
+
+                        @Html.TextAreaFor(m => m.Contains, new { @class = "form-control", rows = 8 })
+                        @Html.ValidationMessageFor(m => m.Contains)
+
+                        <button type="submit" class="btn btn-block js-submit" style="font-size: 18px;">نشر</button>
+
+
+                        <div class="textcenter text-danger">
+                            <h4 class="message-result text-center">@ViewBag.Result</h4>
+
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>
+
+@section scripts {
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+}

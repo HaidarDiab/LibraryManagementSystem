@@ -1,0 +1,31 @@
+﻿@model LibraryManagementSystem.ViewModels.SearchFormViewModel
+@{
+    ViewBag.Title = "البحث عن كتاب";
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+
+
+<div class="manage" style="height:83vh">
+
+    <div class="container col-md-12">
+        <div class="col-md-4"></div>
+
+        @using (Html.BeginForm("Search", "Home"))
+        {
+            <div class="input-group col-md-8">
+
+                <h2 class="text-center">البحث عن كتاب</h2>
+
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.SearchTearms, new { @class = "form-control" })
+                    <span class="input-group-addon">
+                        <i class="bi bi-search"></i>
+                    </span>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+</div>

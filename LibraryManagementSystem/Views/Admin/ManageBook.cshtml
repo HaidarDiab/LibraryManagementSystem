@@ -1,0 +1,68 @@
+﻿@model IEnumerable<LibraryManagementSystem.Models.Book>
+
+@{
+    ViewBag.Title = "إدارة الكتب";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@*This div for page-loading wating*@
+<div class="loading" align="center">
+    <img src="~/images/book-loading.gif" alt="Loading, Please Wait..." style="text-align: center" />
+</div>
+
+
+<div class="container manage">
+
+
+
+    <div class="jumbotron row col-md-12 text-center">
+
+        @if (!Model.Any())
+        {
+            <h3 class="text-center text-danger">لم تتم إضافة كتب بعد</h3>
+        }
+
+        <h4 class="message-result text-center">@ViewBag.Result</h4>
+
+        <div class="col-md-12">
+
+            <div class="col-md-12 manage-display-controlpanel-admin">
+
+                @foreach (var book in Model)
+                {
+
+                    <div class="col-md-3 manage-dev">
+                        <div>
+                            <img src="~/ExtractedImages/@book.CoverImageName" />
+                            <p><strong>@book.Title</strong></p>
+
+                            <div class="manage-links">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    @Html.ActionLink("حذف", "DeleteBook", "Admin", new { id = book.Id }, new { onclick = "return confirm('هل انت متأكد من أنك تريد حذف هذا الكتاب؟');" });
+                                    @Html.ActionLink("تفاصيل", "BookDetails", "Home", new { id = book.Id }, null);
+                                    @Html.ActionLink("تعديل", "EditBook", "Admin", new { id = book.Id }, null);
+                                }
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+
+            <div class="col-md-12">
+                @Html.ActionLink("إضافة كتب", "AddBook", "Admin", null, new { @class = "form-control" })
+                @Html.ActionLink("البحث عن كتاب", "Search", "Home", null, new { @class = "form-control" })
+                <a href="@Request.UrlReferrer" class="form-control text-center  text-danger" title="الرجوع للصفحة السابقة">الرجوع للصفحة السابقة</a>
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>

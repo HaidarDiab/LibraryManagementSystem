@@ -1,0 +1,53 @@
+﻿@model IEnumerable<LibraryManagementSystem.Models.Book>
+@{
+    ViewBag.Title = "التصنيفات";
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+
+
+@*This div for page-loading wating*@
+<div class="loading" align="center">
+    <img src="~/images/book-loading.gif" alt="Loading, Please Wait..." style="text-align: center" />
+</div>
+
+
+<div class="container manage">
+
+
+    <div class="jumbotron row col-md-12 text-center">
+
+        @if (!Model.Any())
+        {
+            <h3 class="text-center text-danger">لم تتم إضافة كتب للتصنيف بعد</h3>
+        }
+
+
+        <h4 class="message-result">@ViewBag.Result</h4>
+
+        <div class="col-md-12 manage-display">
+
+            @foreach (var book in Model)
+            {
+
+                <div class="col-md-3 manage-dev">
+                    <div>
+                        <img src="~/ExtractedImages/@book.CoverImageName" />
+                        <h4>@book.Title</h4>
+
+                        <div class="manage-links2">
+                            @Html.ActionLink("تفاصيل الكتاب", "BookDetails", "Home", new { id = book.Id }, new { @class = "form-control" });
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+        </div>
+
+
+
+    </div>
+
+
+</div>
+

@@ -1,0 +1,74 @@
+﻿<h3>
+    File Upload With Progress bar
+</h3>
+<div id="FileUploadDiv">
+    <div class="row">
+        <div class="col-md-4">
+            <!--File browse button-->
+            <input type="file" id="files" name="files" multiple />
+        </div>
+        <div class="col-md-4">
+            <input type="button" id="Upload" class="btn btn-primary" value="Upload" />
+        </div>
+    </div>
+</div>
+
+<br />
+<!--Bootstrap progress bar-->
+<div class="progress">
+    <div id="progressBardiv" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="">
+        <span class="sr-only"></span>
+    </div>
+</div>
+
+<br />
+<br />
+
+@section scripts {
+    
+    <script>
+
+        $(document).ready(function () {
+            $('#Upload').click(function () {
+
+                var fileUpload = $("#files").get(0);
+                var files = fileUpload.files;
+
+                // Create  a FormData object
+                var fileData = new FormData();
+
+                // if there are multiple files , loop through each files
+                for (var i = 0; i < files.length; i++) {
+                    fileData.append(files[i].name, files[i]);
+                }
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/Test/UploadFiles", true);
+                xhr.upload.onprogress = function (e) {
+
+                    if (e.lengthComputable) {
+                        //updating progress bar here
+                        $("#progressBardiv").attr('max', e.total);
+                        $("#progressBardiv").css('width', e.loaded);
+
+                    }
+                }
+                xhr.upload.onloadstart = function (e) {
+                    //updating progress bar on strt of AJAX request
+                    $("#progressBardiv").css('width', 0);
+
+                }
+                xhr.upload.onloadend = function (e) {
+                    //called on file upload is done.
+                    $("#progressBardiv").css('width', e.loaded);
+
+                }
+                //send form Data
+                xhr.send(fileData);
+
+            });
+        });
+
+    </script>
+    
+    }

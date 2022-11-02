@@ -1,0 +1,180 @@
+﻿@model LibraryManagementSystem.ViewModels.BlogFormViewModel
+@{
+    ViewBag.Title = "المدونة";
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+
+
+@*This div for page-loading wating*@
+<div class="loading" align="center">
+        <img src="~/images/book-loading.gif" alt="Loading, Please Wait..." style="text-align: center" />
+    </div>
+
+<div class="container post" id="toaster">
+
+    <h2></h2>
+
+    <div class=" row col-md-12">
+
+        @if (!Model.Posts.Any())
+        {
+            <h3 class="text-center" style="background-color: #fae56f; color: #ff0000">لم تتم إضافة أي منشور بعد</h3>
+        }
+
+
+
+        @foreach (var post in Model.Posts)
+        {
+            <div class="col-md-2"></div>
+
+
+            <div class="col-md-8 postchatbox">
+
+
+                <div class="div-post-details">
+
+                    <div class="post-owneranddate">
+
+                        <img src="~/images/@post.Profile.ImageName" class="img-circle pull-left" style="width: 30px; height: 30px;" />
+                        <div class="col-md-4">
+                            <a style="padding: 0">@post.Profile.FirstName @post.Profile.LastName<br /></a>
+                            <a style="font-size: 14px;">@post.DateAdded</a>
+                        </div>
+
+
+                    </div>
+
+
+                    <div style="height: 10px"></div>
+
+
+
+                    <div class="post-content">
+
+                        @Html.DisplayFor(p => post.Contains, new { @class = "col-md-8" })
+
+                    </div>
+
+
+                    <div class="post-edit-buttons col-md-8">
+
+                        <div class="col-md-6">
+
+                            @Html.ActionLink("تعليق ", "AddComment", "Home", new { id = post.Id }, new { @class = "bi bi-chat-left form-control button-link-toggle js-comment" })
+
+                        </div>
+
+                        <div class="col-md-6">
+                            @if (!Model.LikeOnPosts.Any() || Model.LikeOnPosts.Any())
+                            {
+                                ViewBag.BtnClass = "js-like bi bi-hand-thumbs-up btn-block";
+                                ViewBag.BtnName = " إعجاب ";
+                            }
+
+                            @if (Model.LikeOnPosts.Any(m => m.Like == true && m.PostId == post.Id && m.ApplicationUserId == ViewBag.ApplicationUserId))
+                            {
+                                ViewBag.BtnClass = "js-unlike bi bi-hand-thumbs-up-fill btn-primary";
+                                ViewBag.BtnName = " أعجبني ";
+                            }
+
+                            <button type="button" data-post-id="@post.Id" class="form-control @ViewBag.BtnClass">@ViewBag.BtnName</button>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+                @Html.ActionLink("عرض التعليقات", "DisplayComments", "Home", new { id = post.Id }, new { @class = "form-control btn-link col-md-8 displaycommentshref" })
+
+                <div style="height: 10px"></div>
+              
+            </div>
+        }
+
+    </div>
+
+</div>
+
+<input type="text" value="@User.Identity.IsAuthenticated" id="userAutId" hidden />
+
+@section scripts {
+
+    <script>
+
+       
+
+        $(document).ready(function () {
+
+            var userStatue = $("#userAutId").val();
+
+           
+
+            $(".js-like").click(function (e) {
+                var button = $(e.target);
+                if (userStatue == false) {
+                    swal("يتطلب ذلك تسجيل الدخول");
+
+                }
+                else {
+
+                    $.post("/Home/LikePost", { PostId: button.attr("data-post-id") })
+                        .done(function () {
+
+                            button.removeClass("btn-block bi-hand-thumbs-up js-like").addClass("btn-primary bi-hand-thumbs-up-fill js-unlike").text("أعجبني");
+                            toastr.info("تم تسجيل الإعجاب");
+                        })
+                        .fail(function () {
+                            toastr.error("خطأ بالخادم أعد المحاولة");
+                        })
+                }
+            });
+
+            $(".js-unlike").click(function (e) {
+                var button = $(e.target);
+                $.post("/Home/LikePost", { PostId: button.attr("data-post-id") })
+                    .done(function () {
+                        button.removeClass("btn-primary bi-hand-thumbs-up-fill js-unlike").addClass("btn-block bi-hand-thumbs-up js-like").text("إعجاب");
+                        toastr.info("تم إلغاء تسجيل الإعجاب");
+
+                    })
+                    .fail(function () {
+                        toastr.error("خطأ بالخادم أعد المحاولة");
+                    })
+            });
+  
+
+
+            $(".js-comment").click(function (e) {
+                var button = $(e.target);
+                if (userStatue == false) {
+                    swal("يتطلب ذلك تسجيل الدخول");
+
+                }
+
+                else {
+
+                    if (e) {
+
+                        document.getElementById('textboxId').focus();
+                    }
+
+                    else {
+
+                swal("خطأ بالخادم الرجاء المحاولة مرة أخرى أو استخدام الشريط الجانبي للوصول لصندوق التعليقات في الأسفل")
+                    }
+
+
+                }
+            });
+
+
+        });
+
+    </script>
+
+
+}

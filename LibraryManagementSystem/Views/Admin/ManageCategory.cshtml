@@ -1,0 +1,65 @@
+﻿@model IEnumerable<LibraryManagementSystem.Models.BooksCategory>
+
+@{
+    ViewBag.Title = "إدارة التصنيفات";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*This div for page-loading wating*@
+<div class="loading" align="center">
+    <img src="~/images/book-loading.gif" alt="Loading, Please Wait..." style="text-align: center" />
+</div>
+
+
+<div class="container manage">
+
+
+    <div class="jumbotron row col-md-12 text-center">
+
+        @if (!Model.Any())
+        {
+            <h3 class="text-center text-danger">لم تتم إضافة تصنيفات بعد</h3>
+        }
+
+        <h4 class="message-result">@ViewBag.Result</h4>
+
+        <div class="col-md-12 manage-display-controlpanel-admin">
+
+            @foreach (var category in Model)
+            {
+
+                <div class="col-md-3 manage-dev">
+                    <div>
+                        <img src="~/images/@category.ImageName" />
+                        <h4>@category.Name</h4>
+
+                        <div class="manage-links">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+
+                                @Html.ActionLink("حذف", "DeleteCategory", "Admin", new { id = category.Id }, new { onclick = "return confirm('هل انت متأكد من أنك تريد حذف هذا التصنيف؟');" });
+                                @Html.ActionLink("انتقل", "DisplaySpecificBooksCategory", "Home", new { id = category.Id }, null);
+                                @Html.ActionLink("تعديل", "EditCategory", "Admin", new { id = category.Id }, null);
+
+                            }
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+        </div>
+
+
+        <div class="col-md-12">
+
+            @Html.ActionLink("إضافة تصنيفات", "AddCategory", "Admin", null, new { @class = "form-control" })
+
+            <a href="@Request.UrlReferrer" class="form-control text-center  text-danger" title="الرجوع للصفحة السابقة">الرجوع للصفحة السابقة</a>
+        </div>
+
+
+    </div>
+
+
+</div>

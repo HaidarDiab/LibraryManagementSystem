@@ -1,0 +1,33 @@
+﻿
+@{
+    ViewBag.Title = "لوحة التحكم";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@*This div for page-loading wating*@
+<div class="loading" align="center">
+    <img src="~/images/book-loading.gif" alt="Loading, Please Wait..." style="text-align: center" />
+</div>
+
+    <h2 class="text-center">لوحة التحكم</h2>
+
+<div class="container manage text-center">
+
+
+
+    <div class="jumbotron row col-md-12">
+        <div class="col-md-3"></div>
+
+        <div class="col-md-6">
+
+            @Html.ActionLink("إدارة المستخدمين", "ManageUser", "Admin", null, new { @class = "form-control" })
+            @Html.ActionLink("إدارة الكتب", "ManageBook", "Admin", null, new { @class = "form-control" })
+            @Html.ActionLink("إدارة التصنيفات", "ManageCategory", "Admin", null, new { @class = "form-control" })
+            <a href="@Request.UrlReferrer" class="form-control text-danger" title="الرجوع للصفحة السابقة">الرجوع للصفحة السابقة</a>
+
+        </div>
+
+    </div>
+
+</div>

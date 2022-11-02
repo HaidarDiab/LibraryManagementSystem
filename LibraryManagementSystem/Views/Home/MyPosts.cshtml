@@ -1,0 +1,159 @@
+﻿@model LibraryManagementSystem.ViewModels.BlogFormViewModel
+@{
+    ViewBag.Title = "منشوراتي";
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+
+
+@*This div for page-loading wating*@
+<div class="loading" align="center">
+    <img src="~/images/book-loading.gif" alt="Loading, Please Wait..." style="text-align: center" />
+</div>
+
+
+<div class="container post" id="toaster">
+
+    <h2></h2>
+
+    <div class=" row col-md-12">
+
+
+        @if (!Model.Posts.Any())
+        {
+            <div class="col-md-12 text-center">
+
+                <h3 style="background-color: #fae56f; color: #ff0000">لم تتم إضافة أي منشور بعد</h3>
+                @Html.ActionLink("أضف منشور", "AddPost", "Home", null, new { @class = "form-control btn-block" })
+            </div>
+        }
+
+
+
+        @foreach (var post in Model.Posts)
+        {
+
+            <div class="col-md-2"></div>
+
+            <div class="col-md-8 postchatbox">
+
+
+                <div class="post-owneranddate">
+
+                    <img src="~/images/@post.Profile.ImageName" class="img-circle pull-left" style="width: 30px; height: 30px;" />
+                    <div class="col-md-4">
+                        <a style="padding: 0">@post.Profile.FirstName @post.Profile.LastName<br /></a>
+                        <a style="font-size: 14px;">@post.DateAdded</a>
+                    </div>
+
+                </div>
+
+
+                <div style="height: 10px"></div>
+
+
+                <div class="post-content">
+
+                    <input id="modelId" type="text" value="@post.Id" hidden />
+
+                    @Html.TextAreaFor(p => post.Contains, new { @class = "col-md-8 form-control", id = "contentId" })
+                </div>
+
+
+                <div class="post-edit-buttons col-md-8">
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+
+                        <div class="col-md-4">
+
+                            <button type="submit" data-post-id="@post.Id" class="js-delete btn-block bi bi-trash3 form-control">حذف</button>
+                        </div>
+
+                        <div class="col-md-4">
+
+                            @Html.ActionLink("أضف منشور", "AddPost", "Home", null, new { @class = "form-control btn-block bi bi-plus-lg" })
+
+                        </div><div class="col-md-4" id="toaster">
+
+                            <button type="submit" data-post-id="@post.Id" class="btn-block bi bi-archive form-control js-update">حفظ التعديلات</button>
+
+                        </div>
+
+                    }
+                </div>
+
+                <div style="height: 10px"></div>
+
+
+            </div>
+
+            <div class="divider"></div>
+        }
+
+        @*}*@
+
+    </div>
+
+</div>
+
+@section scripts {
+
+    <script>
+
+        $(document).ready(function () {
+
+
+            $("#toaster").on("click", ".js-delete", function () {
+
+                var button = $(this);
+
+                if (confirm("هل أنت متاكد من أنك تريد حذف هذا المنشور؟")) {
+
+                    $.ajax({
+                        url: "/Home/DeletePost/" + button.attr("data-post-id"),
+                        method: "DELETE",
+                        success: function () {
+
+                            toastr.success("تم حذف المنشور بنجاح");
+
+                            setTimeout(function () {
+                                location.reload(true);
+                            }, 2000);
+
+                        }
+                    });
+                }
+
+            });
+
+
+            $("#toaster").on("click", ".js-update", function () {
+
+                var dataobject = {};
+                dataobject.id = $("#modelId").val();
+                dataobject.contents = $("#contentId").val();
+
+
+                if (confirm("هل أنت متاكد من أنك تريد تعديل هذا المنشور؟")) {
+
+                    $.ajax({
+                        url: "/Home/UpdatePost",
+                        method: "PUT",
+                        data: JSON.stringify(dataobject),
+                        contentType: "application/json; charset=utf-8",
+                        success: function () {
+                            toastr.success("تم تعديل المنشور بنجاح");
+
+                            setTimeout(function () {
+                                location.reload(true);
+                            }, 2000);
+                        },
+                    });
+                }
+
+            });
+
+        });
+    </script>
+
+}

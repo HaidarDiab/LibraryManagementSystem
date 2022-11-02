@@ -1,0 +1,179 @@
+﻿@model LibraryManagementSystem.ViewModels.BookFormViewModel
+@{
+    ViewBag.Title = "إضافة كتاب";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@*This div for page-loading wating*@
+<div class="loading" align="center">
+    <img src="~/images/book-loading.gif" alt="Loading, Please Wait..." style="text-align: center" />
+</div>
+
+
+<div class="container manage">
+
+
+    <div class="jumbotron row col-md-12">
+
+        <div class="textcenter text-danger">
+            <h4 class="message-result text-center">@ViewBag.Result</h4>
+
+        </div>
+
+        <div class="col-md-3"></div>
+
+
+        <div class="col-md-9">
+
+            @using (Html.BeginForm("AddBook", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+
+                <div class="col-md-6 pull-right">
+
+                    <div class="form-group">
+
+                        @Html.LabelFor(m => m.Title)
+                        @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                        <div class="text-danger">
+                            @Html.ValidationMessageFor(m => m.Title)
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        @Html.LabelFor(m => m.AuthorName)
+                        @Html.TextBoxFor(m => m.AuthorName, new { @class = "form-control" })
+                        <div class="text-danger">
+                            @Html.ValidationMessageFor(m => m.AuthorName)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+
+                        @Html.LabelFor(m => m.ReleaseDate)
+                        @Html.TextBoxFor(m => m.ReleaseDate, "{0:d MMM yyyy}", new { @class = "form-control", placeholder = "eg. 1 Aug 2022" })
+
+                        <div class="text-danger">
+                            @Html.ValidationMessageFor(m => m.ReleaseDate)
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+
+                        @Html.LabelFor(m => m.Summary)
+                        @Html.TextAreaFor(m => m.Summary, new { @class = "form-control" })
+                        <div class="text-danger">
+                            @Html.ValidationMessageFor(m => m.Summary)
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+
+                        @Html.LabelFor(m => m.BooksCtegoryId)
+                        @Html.DropDownListFor(m => m.BooksCtegoryId, new SelectList(Model.BooksCategories, "Id", "Name"), "اختر تصنيف", new { @class = "form-control" })
+                        <div class="text-danger">
+                            @Html.ValidationMessageFor(m => m.BooksCtegoryId)
+
+                        </div>
+
+
+                    </div>
+
+                    <div class="text-center">
+
+                        <input type="file" name="file" id="files" onchange="PreviewImage()" class="input-image-upload btn btn-info" />
+
+                        <br />
+                        <!--Bootstrap progress bar-->
+                        <div class="progress">
+                            <div id="progressBardiv" class="progress-bar active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row pull-right">
+                        @Html.HiddenFor(m => m.Id)
+                        @Html.HiddenFor(m => m.BooksCtegoryId)
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit" class="btn btn-info ">حفظ</button><br /><br />
+                        @Html.ActionLink("الكتب", "ManageBook", "Admin", null, new { @class = "btn btn-info" })
+
+
+                    </div>
+                </div>
+
+
+
+
+            }
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+@*Enable Client side validation ... we should put it here .. To ensuser that JQueryval bundels come after JQuery definition *@
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+
+        $(document).ready(function () {
+            $('#files').change(function () {
+
+                var fileUpload = $("#files").get(0);
+                var files = fileUpload.files;
+
+                // Create  a FormData object
+                var fileData = new FormData();
+
+                // if there are multiple files , loop through each files
+                for (var i = 0; i < files.length; i++) {
+                    fileData.append(files[i].name, files[i]);
+                }
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/Home/AddBook", true);
+                xhr.upload.onprogress = function (e) {
+
+                    if (e.lengthComputable) {
+                        //updating progress bar here
+                        $("#progressBardiv").attr('max', e.total);
+                        $("#progressBardiv").css('width', e.loaded);
+
+                    }
+                }
+                xhr.upload.onloadstart = function (e) {
+                    //updating progress bar on strt of AJAX request
+                    $("#progressBardiv").css('width', 0);
+
+                }
+                xhr.upload.onloadend = function (e) {
+                    //called on file upload is done.
+                    $("#progressBardiv").css('width', e.loaded);
+
+                }
+                //send form Data
+                xhr.send(fileData);
+
+            });
+        });
+       
+    </script>
+
+}
+
