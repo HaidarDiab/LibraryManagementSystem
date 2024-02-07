@@ -1,4 +1,4 @@
-﻿using LibraryManagementSystem.Models;
+using LibraryManagementSystem.Models;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -26,13 +26,19 @@ namespace LibraryManagementSystem.Controllers
 		public ActionResult Index()
 		{
 			var userId = User.Identity.GetUserId();
-			var profile = _context.Profiles.Single(p => p.ApplicationUserId == userId);
+			var profile = _context.Profiles.SingleOrDefault(p => p.ApplicationUserId == userId);
+			if (profile != null)
+			{
 
 			return View(profile);
-		}
+			}
+
+            else return RedirectToAction("AddProfile", "Profiles");
+
+        }
 
 
-		[HttpGet]
+        [HttpGet]
 		public ActionResult AddProfile()
 		{
 			var profile = new Profile();
